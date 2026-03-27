@@ -1,0 +1,9 @@
+# Entorno virtual
+venv/
+
+# Cache de Python
+__pycache__/
+
+# Archivos generados por la app
+clientes.xlsx
+reporte_clientes.pdf

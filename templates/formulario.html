@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Clientes</title>
+    <style>
+        /* ── Reset y base ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f1724;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* ── Contenedor del formulario ── */
+        .contenedor {
+            background-color: #1a2332;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4fc3f7;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+        }
+
+        /* ── Campos del formulario ── */
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #90a4ae;
+            font-size: 0.9rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #2d3e50;
+            border-radius: 8px;
+            background-color: #243447;
+            color: #ffffff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: #4fc3f7;
+        }
+
+        select option {
+            background-color: #243447;
+        }
+
+        /* ── Botones ── */
+        .btn-guardar {
+            width: 100%;
+            padding: 14px;
+            background-color: #4fc3f7;
+            color: #0f1724;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-guardar:hover {
+            background-color: #39b0e4;
+        }
+
+        .btn-reporte {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            background-color: transparent;
+            color: #90a4ae;
+            border: 1px solid #2d3e50;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-reporte:hover {
+            border-color: #4fc3f7;
+            color: #4fc3f7;
+        }
+
+        /* ── Mensaje de confirmación ── */
+        #mensaje {
+            text-align: center;
+            margin-top: 16px;
+            color: #66bb6a;
+            font-size: 0.95rem;
+            min-height: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor">
+        <h1>Registro de Clientes</h1>
+
+        <!-- Formulario de captura -->
+        <form id="formulario">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="servicio">Servicio</label>
+            <select id="servicio" name="servicio" required>
+                <option value="">Selecciona un servicio</option>
+                <option value="Reportes Automatizados">Reportes Automatizados</option>
+                <option value="Dashboards">Dashboards</option>
+                <option value="Automatización WhatsApp">Automatización WhatsApp</option>
+                <option value="Análisis de Datos">Análisis de Datos</option>
+                <option value="Consultoría Python">Consultoría Python</option>
+            </select>
+
+            <!-- Botón principal: guardar en Excel -->
+            <button type="submit" class="btn-guardar">Guardar Cliente</button>
+        </form>
+
+        <!-- Botón secundario: generar PDF (fuera del form, es un GET independiente) -->
+        <button class="btn-reporte" onclick="generarReporte()">Generar Reporte PDF</button>
+
+        <!-- Zona de feedback para el usuario -->
+        <p id="mensaje"></p>
+    </div>
+
+    <script>
+        // ── Guardar cliente: intercepta el submit y envía datos al endpoint ──
+        document.getElementById("formulario").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const form = new FormData(e.target);
+            const res = await fetch("/guardar-cliente", { method: "POST", body: form });
+            const data = await res.json();
+
+            // Mostrar confirmación con el nombre del cliente guardado
+            document.getElementById("mensaje").textContent = data.mensaje + ": " + data.nombre;
+
+            // Limpiar el formulario para el siguiente registro
+            e.target.reset();
+        });
+
+        // ── Generar reporte: abre el endpoint GET en nueva pestaña para descargar ──
+        function generarReporte() {
+            window.open("/generar-reporte", "_blank");
+        }
+    </script>
+
+</body>
+</html>
