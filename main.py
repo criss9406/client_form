@@ -79,13 +79,37 @@ async def guardar_cliente(
 
 
 # ──────────────────────────────────────────────
-# Endpoint 2: Generar reporte PDF
+# Endpoint 2: Descargar Excel (backup)
+# ──────────────────────────────────────────────
+
+@app.get("/descargar-excel")
+def descargar_excel():
+    """Descarga el archivo Excel con todos los clientes registrados."""
+
+    if not os.path.exists(ARCHIVO_EXCEL):
+        return JSONResponse(
+            {"mensaje": "No hay clientes registrados aún"},
+            status_code=404
+        )
+
+    return FileResponse(
+        ARCHIVO_EXCEL,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        filename=ARCHIVO_EXCEL
+    )
+
+
+# ──────────────────────────────────────────────
+# Endpoint 3: Generar reporte PDF
 # ──────────────────────────────────────────────
 
 @app.get("/generar-reporte")
 def generar_reporte():
     """
     Lee todos los clientes desde clientes.xlsx y genera un PDF.
+    
+    El PDF lista cada cliente en formato: nombre | email | servicio.
+    Incluye paginación automática si los registros exceden una página.
     """
 
     # Validar que exista el Excel con datos

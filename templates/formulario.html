@@ -142,7 +142,8 @@
             <button type="submit" class="btn-guardar">Guardar Cliente</button>
         </form>
 
-        <!-- Botón secundario: generar PDF (fuera del form, es un GET independiente) -->
+        <!-- Botones de descarga (fuera del form, son GET independientes) -->
+        <button class="btn-reporte" onclick="descargarExcel()">Descargar Excel</button>
         <button class="btn-reporte" onclick="generarReporte()">Generar Reporte PDF</button>
 
         <!-- Zona de feedback para el usuario -->
@@ -164,6 +165,11 @@
             // Limpiar el formulario para el siguiente registro
             e.target.reset();
         });
+
+        // ── Descargar Excel: abre el endpoint GET para descargar el backup ──
+        function descargarExcel() {
+            window.open("/descargar-excel", "_blank");
+        }
 
         // ── Generar reporte: abre el endpoint GET en nueva pestaña para descargar ──
         function generarReporte() {
